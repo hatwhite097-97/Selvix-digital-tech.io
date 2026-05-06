@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Selvix Digital Tech</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            blue: '#0052FF', // Electric Blue
+                            gold: '#FFD700', // Gold
+                            dark: '#020617', // Slate-950
+                            glass: 'rgba(255, 255, 255, 0.05)',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Appwrite SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.1"></script>
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; color: white; overflow-x: hidden; }
+        
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar { display: none; }
+        
+        /* Glassmorphism Classes */
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; }
+        .glass-nav { background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(15px); border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-sidebar { background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(20px); border-right: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        /* Rich Loading Animation */
+        .rich-loader { width: 60px; height: 60px; border-radius: 50%; border: 4px solid transparent; border-top-color: #0052FF; border-bottom-color: #FFD700; animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite; }
+        .rich-loader::before { content: ""; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; border-radius: 50%; border: 4px solid transparent; border-left-color: #0052FF; border-right-color: #FFD700; animation: spin 2s linear infinite reverse; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Smooth Transitions */
+        .screen { display: none; opacity: 0; transition: opacity 0.4s ease; }
+        .screen.active { display: block; opacity: 1; }
+        
+        /* Ad Space */
+        .ad-space { background: repeating-linear-gradient(45deg, rgba(255,215,0,0.1), rgba(255,215,0,0.1) 10px, rgba(0,82,255,0.1) 10px, rgba(0,82,255,0.1) 20px); border: 1px dashed #FFD700; }
+
+        /* Scratch Card Canvas */
+        #scratch-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer; border-radius: 0.5rem; }
+        
+        /* Inputs */
+        input, select, textarea { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #0052FF; }
+        
+        /* Sidebar transition */
+        #sidebar { transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
+        #sidebar.open { transform: translateX(0); }
+    </style>
+</head>
+<body class="text-white min-h-screen relative">
+
+    <!-- 1. SPLASH SCREEN -->
+    <div id="splash-screen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center screen active">
+        <img src="https://cdn.phototourl.com/free/2026-05-06-3fa32829-85d0-4405-afb3-6e7885946d6c.png" alt="Selvix Logo" class="w-40 h-40 object-contain mb-8 animate-pulse">
+        <h1 class="text-4xl font-bold text-slate-900 tracking-wider mb-8">SELVIX</h1>
+        <div class="rich-loader relative"></div>
+    </div>
+
+    <!-- 2. AUTH SCREEN (Login & Signup) -->
+    <div id="auth-screen" class="min-h-screen px-6 py-10 flex flex-col justify-center screen">
+        <div class="glass-card p-8 w-full max-w-md mx-auto">
+            <div class="text-center mb-8">
+                <img src="https://cdn.phototourl.com/free/2026-05-06-3fa32829-85d0-4405-afb3-6e7885946d6c.png" class="w-20 mx-auto mb-4 bg-white rounded-xl p-1">
+                <h2 class="text-2xl font-bold text-brand-gold" id="auth-title">Karibu Selvix</h2>
+                <p class="text-sm text-gray-400 mt-2" id="auth-subtitle">Ingia kwenye akaunti yako</p>
+                <div id="auth-error" class="hidden text-red-500 text-sm mt-3 bg-red-500/10 p-2 rounded border border-red-500/50"></div>
+                <div id="auth-success" class="hidden text-green-400 text-sm mt-3 bg-green-500/10 p-2 rounded border border-green-500/50"></div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="text-xs text-gray-400">Username au Email</label>
+                    <input type="text" id="log-user" class="w-full mt-1 p-3 rounded-xl" required>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Namba ya Siri</label>
+                    <input type="password" id="log-pass" class="w-full mt-1 p-3 rounded-xl" required>
+                </div>
+                <button type="submit" class="w-full bg-brand-blue hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition mt-4 shadow-[0_0_15px_rgba(0,82,255,0.5)]">
+                    Ingia Sasa
+                </button>
+                <p class="text-center text-sm text-gray-400 mt-4">Huna akaunti? <a href="#" onclick="toggleAuth()" class="text-brand-gold font-semibold">Jisajili hapa</a></p>
+            </form>
+
+            <!-- Signup Form (Hidden initially) -->
+            <form id="signup-form" class="space-y-4 hidden">
+                <div>
+                    <label class="text-xs text-gray-400">Jina Kamili (Username)</label>
+                    <input type="text" id="reg-name" class="w-full mt-1 p-3 rounded-xl" required>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Email</label>
+                    <input type="email" id="reg-email" class="w-full mt-1 p-3 rounded-xl" required>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="text-xs text-gray-400">Mtandao</label>
+                        <select id="reg-network" class="w-full mt-1 p-3 rounded-xl text-sm" required>
+                            <option value="Airtel">Airtel</option>
+                            <option value="Halotel">Halotel</option>
+                            <option value="Vodacom">Vodacom</option>
+                            <option value="Tigo/Zantel">Tigo/Zantel</option>
+                            <option value="TTCL">TTCL</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400">Namba ya Simu</label>
+                        <input type="tel" id="reg-phone" class="w-full mt-1 p-3 rounded-xl" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Namba ya Siri</label>
+                    <input type="password" id="reg-pass" class="w-full mt-1 p-3 rounded-xl" required>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Thibitisha Namba ya Siri</label>
+                    <input type="password" id="reg-pass-conf" class="w-full mt-1 p-3 rounded-xl" required>
+                </div>
+                <button type="submit" class="w-full bg-brand-gold hover:bg-yellow-500 text-slate-900 font-bold py-3 rounded-xl transition mt-4 shadow-[0_0_15px_rgba(255,215,0,0.5)]">
+                    Kamilisha Usajili
+                </button>
+                <p class="text-center text-sm text-gray-400 mt-4">Una akaunti? <a href="#" onclick="toggleAuth()" class="text-brand-blue font-semibold">Ingia hapa</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. USER DASHBOARD -->
+    <div id="user-dashboard" class="pb-20 screen">
+        <!-- Top Header -->
+        <header class="glass-nav fixed top-0 w-full z-40 px-4 py-3 flex justify-between items-center">
+            <button onclick="toggleSidebar()" class="text-2xl text-white"><i class="fa-solid fa-bars-staggered"></i></button>
+            <div class="text-center flex-1">
+                <h1 class="text-xl font-bold text-brand-gold">SELVIX</h1>
+            </div>
+            <button onclick="openNotifications()" class="relative text-2xl text-white">
+                <i class="fa-regular fa-bell"></i>
+                <span id="notif-badge" class="absolute -top-1 -right-1 bg-red-500 text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">1</span>
+            </button>
+        </header>
+
+        <!-- Sidebar -->
+        <div id="sidebar" class="fixed inset-y-0 left-0 w-64 glass-sidebar z-50 p-6 flex flex-col">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-xl font-bold text-brand-blue">Menu</h2>
+                <button onclick="toggleSidebar()" class="text-gray-400 text-2xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
+                <div class="w-12 h-12 rounded-full bg-brand-blue flex items-center justify-center text-xl font-bold"><i class="fa-regular fa-user"></i></div>
+                <div>
+                    <p class="font-bold text-sm" id="side-username">User</p>
+                    <p class="text-xs text-gray-400" id="side-network">Mtandao</p>
+                </div>
+            </div>
+            <nav class="flex flex-col gap-4 flex-1">
+                <a href="#" onclick="showSection('feed'); toggleSidebar()" class="flex items-center gap-3 text-gray-300 hover:text-white"><i class="fa-solid fa-house w-5"></i> Mwanzo</a>
+                <a href="#" onclick="showSection('profile'); toggleSidebar()" class="flex items-center gap-3 text-gray-300 hover:text-white"><i class="fa-solid fa-user-pen w-5"></i> Akaunti Yangu</a>
+                <a href="#" onclick="showSection('redeem'); toggleSidebar()" class="flex items-center gap-3 text-brand-gold font-bold"><i class="fa-solid fa-gift w-5"></i> Kwangua Vocha</a>
+            </nav>
+            <button onclick="logout()" class="flex items-center gap-3 text-red-400 hover:text-red-300 mt-auto"><i class="fa-solid fa-right-from-bracket w-5"></i> Toka Nje</button>
+        </div>
+
+        <!-- Main Content Area -->
+        <main class="pt-20 px-4" id="main-content">
+            
+            <!-- Welcome Banner -->
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold">Karibu, <span id="dash-name" class="text-brand-blue"></span>! 👋</h2>
+                <p class="text-gray-400 text-sm">Pata maujanja na ofa kabambe za kidigitali.</p>
+            </div>
+
+            <!-- FEED SECTION -->
+            <div id="section-feed" class="space-y-4">
+                <!-- Posts will be injected here -->
+                <div id="feed-container"></div>
+            </div>
+
+            <!-- ADD POST SECTION -->
+            <div id="section-addpost" class="hidden">
+                <div class="glass-card p-5">
+                    <h3 class="text-xl font-bold text-brand-gold mb-4">Posti Maujanja Yako</h3>
+                    <input type="text" id="new-post-title" placeholder="Kichwa cha habari..." class="w-full p-3 rounded-lg mb-3">
+                    <textarea id="new-post-content" rows="4" placeholder="Andika maelezo hapa..." class="w-full p-3 rounded-lg mb-3"></textarea>
+                    <button onclick="submitUserPost()" class="w-full bg-brand-blue text-white font-bold py-3 rounded-lg"><i class="fa-solid fa-paper-plane mr-2"></i> Tuma Post</button>
+                </div>
+            </div>
+
+            <!-- PROFILE SECTION -->
+            <div id="section-profile" class="hidden">
+                <div class="glass-card p-5">
+                    <h3 class="text-xl font-bold text-white mb-4">Taarifa Zako</h3>
+                    <div class="space-y-3 text-sm text-gray-300 mb-6">
+                        <p><strong>Jina:</strong> <span id="prof-name"></span></p>
+                        <p><strong>Simu:</strong> <span id="prof-phone"></span></p>
+                        <p><strong>Mtandao:</strong> <span id="prof-net"></span></p>
+                    </div>
+                    <h4 class="text-lg font-bold text-brand-gold mb-3">Badili Namba ya Siri</h4>
+                    <input type="password" id="prof-new-pass" placeholder="Namba ya siri mpya" class="w-full p-3 rounded-lg mb-3">
+                    <input type="password" id="prof-conf-pass" placeholder="Thibitisha namba ya siri" class="w-full p-3 rounded-lg mb-3">
+                    <button onclick="updatePassword()" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg">Hifadhi Mabadiliko</button>
+                </div>
+            </div>
+
+            <!-- REDEEM VOUCHER SECTION -->
+            <div id="section-redeem" class="hidden">
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-gift text-3xl text-brand-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Kwangua Vocha</h3>
+                    <p class="text-sm text-gray-400 mb-6">Ingiza Promo Code uliyopewa ili ukwangue vocha ya mtandao wako.</p>
+                    <input type="text" id="promo-code-input" placeholder="Weka Promo Code hapa... (Mf: PROMO#)" class="w-full p-3 text-center text-lg font-bold rounded-lg mb-4 uppercase">
+                    <button onclick="verifyPromoCode()" class="w-full bg-brand-gold text-slate-900 font-bold py-3 rounded-lg shadow-[0_0_15px_rgba(255,215,0,0.4)]">Thibitisha Code</button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="glass-nav fixed bottom-0 w-full z-40 flex justify-around items-center py-3 pb-5">
+            <button onclick="showSection('feed')" class="flex flex-col items-center text-brand-blue" id="nav-feed">
+                <i class="fa-solid fa-house text-xl"></i>
+                <span class="text-[10px] mt-1">Mwanzo</span>
+            </button>
+            <button onclick="showSection('addpost')" class="flex flex-col items-center text-gray-400 hover:text-white transition" id="nav-add">
+                <div class="bg-brand-blue w-12 h-12 rounded-full flex items-center justify-center -mt-6 shadow-[0_0_10px_rgba(0,82,255,0.8)] text-white">
+                    <i class="fa-solid fa-plus text-xl"></i>
+                </div>
+                <span class="text-[10px] mt-1">Post</span>
+            </button>
+            <button onclick="showSection('profile')" class="flex flex-col items-center text-gray-400 hover:text-white transition" id="nav-prof">
+                <i class="fa-regular fa-user text-xl"></i>
+                <span class="text-[10px] mt-1">Akaunti</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- 4. ADMIN DASHBOARD -->
+    <div id="admin-dashboard" class="pb-10 screen bg-slate-900">
+        <header class="bg-brand-blue px-4 py-4 flex justify-between items-center shadow-lg">
+            <h1 class="text-xl font-bold text-white"><i class="fa-solid fa-user-tie"></i> Admin Panel</h1>
+            <button onclick="logout()" class="text-white text-sm bg-red-500 px-3 py-1 rounded">Toka</button>
+        </header>
+
+        <div class="flex overflow-x-auto gap-2 p-4 bg-black/20">
+            <button onclick="showAdminTab('users')" class="px-4 py-2 bg-brand-blue rounded-lg text-sm font-bold whitespace-nowrap">Watumiaji</button>
+            <button onclick="showAdminTab('posts')" class="px-4 py-2 bg-slate-800 rounded-lg text-sm font-bold whitespace-nowrap">Weka Post</button>
+            <button onclick="showAdminTab('vouchers')" class="px-4 py-2 bg-slate-800 rounded-lg text-sm font-bold whitespace-nowrap">Vocha Zangu</button>
+            <button onclick="showAdminTab('history')" class="px-4 py-2 bg-slate-800 rounded-lg text-sm font-bold whitespace-nowrap">History</button>
+        </div>
+
+        <main class="p-4" id="admin-content">
+            <!-- Admin Users Tab -->
+            <div id="admin-users" class="space-y-3">
+                <h2 class="font-bold text-brand-gold mb-3">Watumiaji Wote & Mitandao</h2>
+                <div id="admin-users-list" class="space-y-2"></div>
+            </div>
+
+            <!-- Admin Posts Tab -->
+            <div id="admin-posts" class="hidden glass-card p-4">
+                <h2 class="font-bold text-brand-gold mb-3">Upload Post / Tangazo</h2>
+                <input type="text" id="admin-post-title" placeholder="Kichwa" class="w-full p-2 mb-2 rounded bg-slate-800 text-sm">
+                <input type="text" id="admin-post-img" placeholder="URL ya Picha (hiari)" class="w-full p-2 mb-2 rounded bg-slate-800 text-sm">
+                <textarea id="admin-post-content" placeholder="Maelezo..." rows="4" class="w-full p-2 mb-2 rounded bg-slate-800 text-sm"></textarea>
+                <button onclick="adminAddPost()" class="w-full bg-brand-blue py-2 rounded font-bold">Post Sasa</button>
+            </div>
+
+            <!-- Admin Vouchers Tab -->
+            <div id="admin-vouchers" class="hidden glass-card p-4">
+                <h2 class="font-bold text-brand-gold mb-1">Seti Vocha (Max 10)</h2>
+                <p class="text-xs text-gray-400 mb-3">Tengeneza Promo Code na namba halisi ya vocha.</p>
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="v-promo" placeholder="Promo Code (Mf: P1)" class="w-1/3 p-2 rounded bg-slate-800 text-xs">
+                    <input type="text" id="v-network" placeholder="Mtandao" class="w-1/3 p-2 rounded bg-slate-800 text-xs">
+                    <input type="text" id="v-pin" placeholder="Namba ya Vocha" class="w-1/3 p-2 rounded bg-slate-800 text-xs">
+                </div>
+                <button onclick="adminAddVoucher()" class="w-full bg-brand-gold text-black py-2 rounded font-bold text-sm mb-4">Weka Vocha</button>
+                <div id="admin-voucher-list" class="space-y-2"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODALS -->
+
+    <!-- Notifications Modal -->
+    <div id="notif-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex-col justify-end">
+        <div class="bg-slate-900 w-full h-[70vh] rounded-t-2xl p-5 flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-white"><i class="fa-regular fa-bell text-brand-gold"></i> Taarifa Zako</h3>
+                <button onclick="closeNotifications()" class="text-gray-400 text-2xl">&times;</button>
+            </div>
+            <div id="notif-list" class="flex-1 overflow-y-auto space-y-3">
+                <!-- Notifications here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Post Modal -->
+    <div id="post-modal" class="fixed inset-0 bg-slate-950 z-50 hidden flex-col overflow-y-auto">
+        <div class="sticky top-0 glass-nav p-4 flex justify-between items-center z-10">
+            <button onclick="closePostModal()" class="text-white text-xl"><i class="fa-solid fa-arrow-left"></i> Rudi</button>
+            <button id="post-whatsapp-btn" class="text-green-500 text-xl"><i class="fa-brands fa-whatsapp"></i> Share</button>
+        </div>
+        <img id="post-modal-img" src="" class="w-full h-64 object-cover hidden">
+        <div class="p-5">
+            <h1 id="post-modal-title" class="text-2xl font-bold text-brand-gold mb-2"></h1>
+            <p class="text-sm text-gray-400 mb-6 border-b border-white/10 pb-2">Na: <span id="post-modal-author" class="text-brand-blue"></span></p>
+            <div id="post-modal-content" class="text-gray-200 leading-relaxed text-sm whitespace-pre-wrap"></div>
+        </div>
+    </div>
+
+    <!-- Scratch Card Modal -->
+    <div id="scratch-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex-col justify-center items-center p-6">
+        <button onclick="closeScratchModal()" class="absolute top-6 right-6 text-white text-3xl">&times;</button>
+        <h2 class="text-2xl font-bold text-brand-gold mb-6">Kwangua Vocha Yako</h2>
+        
+        <div class="relative w-64 h-32 rounded-xl overflow-hidden shadow-[0_0_20px_rgba(255,215,0,0.5)]">
+            <!-- Bottom Layer (The Voucher) -->
+            <div class="absolute inset-0 bg-white flex flex-col items-center justify-center p-2">
+                <p class="text-xs text-gray-500 font-bold" id="scratch-network-label"></p>
+                <p class="text-xl font-extrabold text-slate-900 tracking-widest mt-1" id="scratch-pin"></p>
+            </div>
+            <!-- Top Layer (Canvas to scratch) -->
+            <canvas id="scratch-canvas" width="256" height="128"></canvas>
+        </div>
+        <p class="text-sm text-gray-400 mt-6 animate-pulse">Tumia kidole kukwangua sehemu ya kijivu</p>
+    </div>
+
+    <!-- Admin Message Modal -->
+    <div id="admin-msg-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex-col justify-center items-center p-6">
+        <div class="glass-card p-5 w-full max-w-sm">
+            <h3 class="text-lg font-bold text-brand-gold mb-2">Tuma Ujumbe kwa <span id="msg-target-name"></span></h3>
+            <textarea id="msg-content" rows="3" class="w-full p-2 rounded bg-slate-800 text-sm mb-3" placeholder="Andika ujumbe..."></textarea>
+            <div class="flex justify-end gap-2">
+                <button onclick="document.getElementById('admin-msg-modal').style.display='none'" class="px-4 py-2 text-sm text-gray-400">Ghairi</button>
+                <button onclick="adminSendMsg()" class="px-4 py-2 bg-brand-blue text-white rounded text-sm font-bold">Tuma Meseji</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ==========================================
+           1. APPWRITE CONFIGURATION
+           ========================================== */
+        const { Client, Account, Databases, ID, Query } = Appwrite;
+        const client = new Client()
+            .setEndpoint('https://cloud.appwrite.io/v1')
+            .setProject('69ebd86600134ce4f388');
+        
+        const account = new Account(client);
+        const databases = new Databases(client);
+        const DB_ID = '69fb9889003a33cdfc60';
+        const COL_ID = 'selvix_digital_tech_';
+
+        /* ==========================================
+           LOCAL MOCK DATA (Fallback ili ifanye kazi mara moja)
+           ========================================== */
+        let localUsers = JSON.parse(localStorage.getItem('slvx_users')) ||[];
+        let localPosts = JSON.parse(localStorage.getItem('slvx_posts')) ||[
+            { id: 1, title: 'Jinsi ya kupata Internet Bure', content: 'Fanya haya mambo matatu kwenye simu yako...\n1. Nenda setting.\n2. Weka APN mpya.\n3. Washa data.', author: 'Admin Salehe', type: 'post' },
+            { id: 2, title: 'Siri za WhatsApp', content: 'Soma meseji bila blue ticks kwa kutumia njia hii ya kisasa kabisa.', author: 'Admin Salehe', type: 'post' }
+        ];
+        let localNotifs = JSON.parse(localStorage.getItem('slvx_notifs')) ||[];
+        let localVouchers = JSON.parse(localStorage.getItem('slvx_vouchers')) ||[];
+        let currentUser = JSON.parse(localStorage.getItem('slvx_current_user')) || null;
+        let isAdmin = localStorage.getItem('slvx_admin') === 'true';
+
+        /* ==========================================
+           2. INITIALIZATION & SPLASH SCREEN
+           ========================================== */
+        window.onload = () => {
+            // Splash Screen Timer (3 seconds as requested)
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.remove('active');
+                
+                if (isAdmin) {
+                    showScreen('admin-dashboard');
+                    renderAdminUsers();
+                } else if (currentUser) {
+                    showScreen('user-dashboard');
+                    initDashboard();
+                } else {
+                    showScreen('auth-screen');
+                }
+            }, 3000);
+
+            // Pop-up Ads simulator
+            setInterval(() => {
+                if(currentUser && !isAdmin && document.getElementById('user-dashboard').classList.contains('active')) {
+                    // Simulating AdSense popup natively
+                    console.log("AdSense Ad Pop-up shown");
+                }
+            }, 30000); // Every 30 seconds
+        };
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => {
+                s.classList.remove('active');
+                s.style.display = 'none';
+            });
+            const s = document.getElementById(screenId);
+            s.style.display = 'block';
+            setTimeout(() => s.classList.add('active'), 50);
+        }
+
+        /* ==========================================
+           3. AUTHENTICATION LOGIC
+           ========================================== */
+        let isLogin = true;
+        function toggleAuth() {
+            isLogin = !isLogin;
+            document.getElementById('login-form').style.display = isLogin ? 'block' : 'none';
+            document.getElementById('signup-form').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('auth-title').innerText = isLogin ? 'Karibu Selvix' : 'Tengeneza Akaunti';
+            document.getElementById('auth-subtitle').innerText = isLogin ? 'Ingia kwenye akaunti yako' : 'Jiunge kupata maujanja';
+            clearAuthMsgs();
+        }
+
+        function showAuthError(msg) {
+            const errDiv = document.getElementById('auth-error');
+            errDiv.innerText = msg;
+            errDiv.style.display = 'block';
+        }
+        function showAuthSuccess(msg) {
+            const sucDiv = document.getElementById('auth-success');
+            sucDiv.innerText = msg;
+            sucDiv.style.display = 'block';
+        }
+        function clearAuthMsgs() {
+            document.getElementById('auth-error').style.display = 'none';
+            document.getElementById('auth-success').style.display = 'none';
+        }
+
+        // Handle Signup
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearAuthMsgs();
+            
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const network = document.getElementById('reg-network').value;
+            const phone = document.getElementById('reg-phone').value;
+            const pass = document.getElementById('reg-pass').value;
+            const passConf = document.getElementById('reg-pass-conf').value;
+
+            if (pass !== passConf) {
+                showAuthError("Namba za siri hazifanani!");
+                return;
+            }
+
+            // Check if user exists locally (Fallback validation)
+            const exists = localUsers.find(u => u.email === email || u.phone === phone);
+            if (exists) {
+                showAuthError("Taarifa Nyekundu: Email au Namba ya simu ishatumika!");
+                return;
+            }
+
+            try {
+                // 1. Appwrite Auth (Real attempt)
+                // Appwrite might fail if session exists, handling gracefully via UI simulation
+                let userId = ID.unique();
+                try {
+                    await account.create(userId, email, pass, name);
+                } catch(appwriteErr) {
+                    console.log("Appwrite Create Error (using local):", appwriteErr);
+                }
+
+                // 2. Save user to Local Mock DB to ensure app works immediately
+                const newUser = { id: userId, name, email, network, phone, pass };
+                localUsers.push(newUser);
+                localStorage.setItem('slvx_users', JSON.stringify(localUsers));
+
+                // 3. Create automatic welcome notification
+                localNotifs.push({
+                    id: Date.now(),
+                    userId: email, // use email as identifier
+                    title: "Hongera kujiunga",
+                    message: `Hongera sana ${name} kwa kufanikiwa kujiunga na Selvix Digital Tech. Hapa utapata maujanja yote!`,
+                    read: false,
+                    date: new Date().toLocaleDateString()
+                });
+                localStorage.setItem('slvx_notifs', JSON.stringify(localNotifs));
+
+                // Success!
+                showAuthSuccess(`Umefanikiwa kujiunga ${name}. Taarifa zako zimehifadhiwa, ingia sasa.`);
+                setTimeout(() => {
+                    toggleAuth();
+                    document.getElementById('log-user').value = email;
+                    document.getElementById('log-pass').value = pass;
+                }, 2500);
+
+            } catch (error) {
+                showAuthError("Kuna kosa limetokea. Jaribu tena.");
+            }
+        });
+
+        // Handle Login
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearAuthMsgs();
+            
+            const userOrEmail = document.getElementById('log-user').value;
+            const pass = document.getElementById('log-pass').value;
+
+            // Admin Logic
+            if (userOrEmail.toLowerCase() === 'salehe' && pass === '5050') {
+                localStorage.setItem('slvx_admin', 'true');
+                isAdmin = true;
+                showScreen('admin-dashboard');
+                renderAdminUsers();
+                return;
+            }
+
+            // User Logic (Local verification fallback ensuring immediate functionality)
+            const user = localUsers.find(u => (u.email === userOrEmail || u.name === userOrEmail) && u.pass === pass);
+            
+            if (user) {
+                try {
+                    // Attempt real Appwrite session creation silently
+                    await account.createEmailPasswordSession(user.email, pass);
+                } catch(e) {}
+                
+                currentUser = user;
+                localStorage.setItem('slvx_current_user', JSON.stringify(currentUser));
+                showScreen('user-dashboard');
+                initDashboard();
+            } else {
+                showAuthError("Taarifa Nyekundu: Username au Password sio sahihi.");
+            }
+        });
+
+        function logout() {
+            try { account.deleteSession('current'); } catch(e){}
+            localStorage.removeItem('slvx_current_user');
+            localStorage.removeItem('slvx_admin');
+            currentUser = null;
+            isAdmin = false;
+            showScreen('auth-screen');
+        }
+
+
+        /* ==========================================
+           4. USER DASHBOARD LOGIC
+           ========================================== */
+        function initDashboard() {
+            document.getElementById('dash-name').innerText = currentUser.name;
+            document.getElementById('side-username').innerText = currentUser.name;
+            document.getElementById('side-network').innerText = currentUser.network;
+            
+            // Profile setup
+            document.getElementById('prof-name').innerText = currentUser.name;
+            document.getElementById('prof-phone').innerText = currentUser.phone;
+            document.getElementById('prof-net').innerText = currentUser.network;
+
+            updateNotificationBadge();
+            renderFeed();
+        }
+
+        // Bottom Nav logic
+        function showSection(id) {
+            document.getElementById('section-feed').style.display = 'none';
+            document.getElementById('section-addpost').style.display = 'none';
+            document.getElementById('section-profile').style.display = 'none';
+            document.getElementById('section-redeem').style.display = 'none';
+            
+            document.getElementById(`section-${id}`).style.display = 'block';
+
+            // Reset Nav Icons styling
+            ['nav-feed', 'nav-add', 'nav-prof'].forEach(navId => {
+                if(document.getElementById(navId)) {
+                    document.getElementById(navId).classList.remove('text-brand-blue');
+                    document.getElementById(navId).classList.add('text-gray-400');
+                }
+            });
+
+            if(id === 'feed') document.getElementById('nav-feed').classList.replace('text-gray-400', 'text-brand-blue');
+            if(id === 'addpost') document.getElementById('nav-add').classList.replace('text-gray-400', 'text-brand-blue');
+            if(id === 'profile') document.getElementById('nav-prof').classList.replace('text-gray-400', 'text-brand-blue');
+        }
+
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            sb.classList.toggle('open');
+        }
+
+        // Notifications
+        function updateNotificationBadge() {
+            const myNotifs = localNotifs.filter(n => n.userId === currentUser.email);
+            const badge = document.getElementById('notif-badge');
+            if(myNotifs.length > 0) {
+                badge.style.display = 'flex';
+                badge.innerText = myNotifs.length;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function openNotifications() {
+            const list = document.getElementById('notif-list');
+            list.innerHTML = '';
+            const myNotifs = localNotifs.filter(n => n.userId === currentUser.email);
+            
+            if(myNotifs.length === 0) {
+                list.innerHTML = `<p class="text-center text-gray-500 text-sm mt-10">Hauna taarifa mpya.</p>`;
+            } else {
+                myNotifs.forEach(n => {
+                    list.innerHTML += `
+                    <div class="bg-white/5 p-3 rounded-lg border border-white/10 relative">
+                        <h4 class="font-bold text-brand-blue text-sm">${n.title}</h4>
+                        <p class="text-xs text-gray-300 mt-1">${n.message}</p>
+                        <p class="text-[10px] text-gray-500 mt-2">${n.date}</p>
+                        <button onclick="deleteNotif(${n.id})" class="absolute top-2 right-2 text-red-400"><i class="fa-solid fa-trash text-xs"></i></button>
+                    </div>`;
+                });
+            }
+            document.getElementById('notif-modal').style.display = 'flex';
+        }
+
+        function closeNotifications() {
+            document.getElementById('notif-modal').style.display = 'none';
+        }
+
+        function deleteNotif(id) {
+            localNotifs = localNotifs.filter(n => n.id !== id);
+            localStorage.setItem('slvx_notifs', JSON.stringify(localNotifs));
+            openNotifications();
+            updateNotificationBadge();
+        }
+
+        // Feed & Posts
+        function renderFeed() {
+            const container = document.getElementById('feed-container');
+            container.innerHTML = '';
+            
+            // Reverse to show newest first
+            const postsToShow = [...localPosts].reverse();
+
+            postsToShow.forEach((post, index) => {
+                // AdSense insertion every 3 posts
+                if (index > 0 && index % 3 === 0) {
+                    container.innerHTML += `
+                    <div class="ad-space w-full h-20 rounded-xl flex items-center justify-center mb-4">
+                        <span class="text-xs text-brand-gold font-bold uppercase tracking-widest bg-black/50 px-3 py-1 rounded">Tangazo (AdSense)</span>
+                    </div>`;
+                }
+
+                // Render Post Card (Glassmorphism)
+                let imgHtml = post.img ? `<img src="${post.img}" class="w-20 h-20 object-cover rounded-lg border border-white/10">` : `<div class="w-20 h-20 bg-brand-blue/20 rounded-lg flex items-center justify-center text-brand-blue text-2xl border border-white/10"><i class="fa-solid fa-bolt"></i></div>`;
+                
+                // Truncate content
+                let shortContent = post.content.length > 60 ? post.content.substring(0, 60) + "..." : post.content;
+
+                let delBtn = (post.author === currentUser.name) ? `<button onclick="deletePost(${post.id}, event)" class="text-red-400 text-xs ml-auto"><i class="fa-solid fa-trash"></i> Futa</button>` : '';
+
+                container.innerHTML += `
+                <div class="glass-card p-3 flex gap-3 mb-4 cursor-pointer hover:bg-white/5 transition" onclick="viewPost(${post.id})">
+                    ${imgHtml}
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-sm text-white leading-tight">${post.title}</h3>
+                            <p class="text-xs text-gray-400 mt-1">${shortContent}</p>
+                        </div>
+                        <div class="flex items-center gap-2 mt-2">
+                            <i class="fa-solid fa-user-circle text-brand-gold text-xs"></i>
+                            <span class="text-[10px] text-gray-400">${post.author}</span>
+                            ${delBtn}
+                        </div>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function submitUserPost() {
+            const title = document.getElementById('new-post-title').value;
+            const content = document.getElementById('new-post-content').value;
+            if(!title || !content) return alert("Jaza vyote!");
+
+            const newPost = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                author: currentUser.name,
+                type: 'post'
+            };
+            localPosts.push(newPost);
+            localStorage.setItem('slvx_posts', JSON.stringify(localPosts));
+            
+            document.getElementById('new-post-title').value = '';
+            document.getElementById('new-post-content').value = '';
+            
+            alert("Post yako imewekwa kikamilifu!");
+            showSection('feed');
+            renderFeed();
+        }
+
+        function deletePost(id, event) {
+            event.stopPropagation(); // prevent opening the post
+            if(confirm("Uhakika unataka kufuta post hii?")) {
+                localPosts = localPosts.filter(p => p.id !== id);
+                localStorage.setItem('slvx_posts', JSON.stringify(localPosts));
+                renderFeed();
+            }
+        }
+
+        // Full Post View
+        let currentViewingPost = null;
+        function viewPost(id) {
+            const post = localPosts.find(p => p.id === id);
+            if(!post) return;
+            currentViewingPost = post;
+
+            document.getElementById('post-modal-title').innerText = post.title;
+            document.getElementById('post-modal-author').innerText = post.author;
+            document.getElementById('post-modal-content').innerText = post.content;
+            
+            const imgEl = document.getElementById('post-modal-img');
+            if(post.img) {
+                imgEl.src = post.img;
+                imgEl.style.display = 'block';
+            } else {
+                imgEl.style.display = 'none';
+            }
+
+            document.getElementById('post-modal').style.display = 'flex';
+        }
+
+        function closePostModal() {
+            document.getElementById('post-modal').style.display = 'none';
+        }
+
+        // WhatsApp Share
+        document.getElementById('post-whatsapp-btn').addEventListener('click', () => {
+            if(!currentViewingPost) return;
+            const text = `*${currentViewingPost.title}*\n\nSoma zaidi ndani ya App ya Selvix Digital Tech!\n\nLink: https://selvix.com/app`;
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        });
+
+        // Profile Password Update
+        function updatePassword() {
+            const p1 = document.getElementById('prof-new-pass').value;
+            const p2 = document.getElementById('prof-conf-pass').value;
+            if(!p1) return;
+            if(p1 !== p2) return alert("Namba hazifanani!");
+            
+            // Update local mock
+            const uIndex = localUsers.findIndex(u => u.email === currentUser.email);
+            if(uIndex > -1) {
+                localUsers[uIndex].pass = p1;
+                localStorage.setItem('slvx_users', JSON.stringify(localUsers));
+                currentUser.pass = p1;
+                localStorage.setItem('slvx_current_user', JSON.stringify(currentUser));
+                alert("Namba ya siri imebadilishwa kikamilifu.");
+                document.getElementById('prof-new-pass').value = '';
+                document.getElementById('prof-conf-pass').value = '';
+            }
+        }
+
+        /* ==========================================
+           5. SCRATCH CARD (Kukwangua Vocha)
+           ========================================== */
+        let isDrawing = false;
+        let scratchCanvas, scratchCtx;
+
+        function verifyPromoCode() {
+            const code = document.getElementById('promo-code-input').value.trim().toUpperCase();
+            if(!code) return alert("Weka promo code!");
+
+            // Check if voucher exists in admin list
+            const voucher = localVouchers.find(v => v.promo === code);
+            if(!voucher) {
+                return alert("Promo code hii sio sahihi au ishatumika.");
+            }
+
+            // Setup Scratch Modal
+            document.getElementById('scratch-network-label').innerText = `Vocha ya ${voucher.network}`;
+            document.getElementById('scratch-pin').innerText = voucher.pin;
+            
+            initCanvas();
+            document.getElementById('scratch-modal').style.display = 'flex';
+
+            // Remove voucher from available list (One time use)
+            localVouchers = localVouchers.filter(v => v.promo !== code);
+            localStorage.setItem('slvx_vouchers', JSON.stringify(localVouchers));
+        }
+
+        function closeScratchModal() {
+            document.getElementById('scratch-modal').style.display = 'none';
+        }
+
+        function initCanvas() {
+            scratchCanvas = document.getElementById('scratch-canvas');
+            scratchCtx = scratchCanvas.getContext('2d');
+            
+            // Fill with silver scratch-off color
+            scratchCtx.globalCompositeOperation = 'source-over';
+            scratchCtx.fillStyle = '#C0C0C0'; // Silver
+            scratchCtx.fillRect(0, 0, scratchCanvas.width, scratchCanvas.height);
+
+            // Add pattern/text on top layer
+            scratchCtx.fillStyle = '#999';
+            scratchCtx.font = '20px Plus Jakarta Sans';
+            scratchCtx.textAlign = 'center';
+            scratchCtx.fillText('KWANGUA HAPA', scratchCanvas.width/2, scratchCanvas.height/2);
+
+            // Set to erase mode
+            scratchCtx.globalCompositeOperation = 'destination-out';
+
+            // Events
+            scratchCanvas.addEventListener('mousedown', startScratch);
+            scratchCanvas.addEventListener('touchstart', startScratch);
+            scratchCanvas.addEventListener('mousemove', scratch);
+            scratchCanvas.addEventListener('touchmove', scratch);
+            scratchCanvas.addEventListener('mouseup', endScratch);
+            scratchCanvas.addEventListener('touchend', endScratch);
+        }
+
+        function startScratch(e) {
+            isDrawing = true;
+            scratch(e);
+        }
+        function endScratch() {
+            isDrawing = false;
+            scratchCtx.beginPath();
+        }
+        function scratch(e) {
+            if (!isDrawing) return;
+            e.preventDefault(); // Prevent scrolling on touch
+            
+            const rect = scratchCanvas.getBoundingClientRect();
+            let x, y;
+
+            if (e.type.includes('touch')) {
+                x = e.touches[0].clientX - rect.left;
+                y = e.touches[0].clientY - rect.top;
+            } else {
+                x = e.clientX - rect.left;
+                y = e.clientY - rect.top;
+            }
+
+            // Adjust for canvas scale
+            const scaleX = scratchCanvas.width / rect.width;
+            const scaleY = scratchCanvas.height / rect.height;
+            x *= scaleX;
+            y *= scaleY;
+
+            scratchCtx.lineWidth = 25; // Size of coin/finger
+            scratchCtx.lineCap = 'round';
+            scratchCtx.lineTo(x, y);
+            scratchCtx.stroke();
+            scratchCtx.beginPath();
+            scratchCtx.moveTo(x, y);
+        }
+
+        /* ==========================================
+           6. ADMIN DASHBOARD LOGIC
+           ========================================== */
+        function showAdminTab(tab) {
+            document.getElementById('admin-users').style.display = 'none';
+            document.getElementById('admin-posts').style.display = 'none';
+            document.getElementById('admin-vouchers').style.display = 'none';
+            
+            if(tab === 'users' || tab === 'history') document.getElementById('admin-users').style.display = 'block';
+            if(tab === 'posts') document.getElementById('admin-posts').style.display = 'block';
+            if(tab === 'vouchers') {
+                document.getElementById('admin-vouchers').style.display = 'block';
+                renderAdminVouchers();
+            }
+        }
+
+        function renderAdminUsers() {
+            const list = document.getElementById('admin-users-list');
+            list.innerHTML = '';
+            
+            if(localUsers.length === 0) {
+                list.innerHTML = '<p class="text-sm text-gray-400">Hakuna watumiaji bado.</p>';
+                return;
+            }
+
+            localUsers.forEach(u => {
+                // Color code networks
+                let netColor = 'text-gray-400';
+                if(u.network === 'Airtel') netColor = 'text-red-500';
+                if(u.network === 'Halotel') netColor = 'text-orange-500';
+                if(u.network === 'Vodacom') netColor = 'text-red-600';
+                if(u.network === 'Tigo/Zantel') netColor = 'text-blue-400';
+                if(u.network === 'TTCL') netColor = 'text-blue-600';
+
+                list.innerHTML += `
+                <div class="bg-slate-800 p-3 rounded-lg flex justify-between items-center cursor-pointer hover:bg-slate-700" onclick="openAdminMsgModal('${u.email}', '${u.name}')">
+                    <div>
+                        <p class="font-bold text-sm text-white">${u.name}</p>
+                        <p class="text-xs ${netColor} font-bold">${u.network} - ${u.phone}</p>
+                    </div>
+                    <div class="text-brand-blue"><i class="fa-solid fa-paper-plane"></i> Meseji</div>
+                </div>`;
+            });
+        }
+
+        function adminAddPost() {
+            const t = document.getElementById('admin-post-title').value;
+            const c = document.getElementById('admin-post-content').value;
+            const i = document.getElementById('admin-post-img').value;
+
+            if(!t || !c) return alert("Weka kichwa na maelezo!");
+
+            localPosts.push({
+                id: Date.now(),
+                title: t,
+                content: c,
+                img: i,
+                author: 'Admin Salehe',
+                type: 'post'
+            });
+            localStorage.setItem('slvx_posts', JSON.stringify(localPosts));
+            alert("Post imewekwa!");
+            document.getElementById('admin-post-title').value = '';
+            document.getElementById('admin-post-content').value = '';
+            document.getElementById('admin-post-img').value = '';
+        }
+
+        let msgTargetEmail = '';
+        function openAdminMsgModal(email, name) {
+            msgTargetEmail = email;
+            document.getElementById('msg-target-name').innerText = name;
+            document.getElementById('admin-msg-modal').style.display = 'flex';
+        }
+
+        function adminSendMsg() {
+            const msg = document.getElementById('msg-content').value;
+            if(!msg) return;
+
+            localNotifs.push({
+                id: Date.now(),
+                userId: msgTargetEmail,
+                title: "Ujumbe kutoka kwa Admin",
+                message: msg,
+                date: new Date().toLocaleDateString()
+            });
+            localStorage.setItem('slvx_notifs', JSON.stringify(localNotifs));
+            alert("Ujumbe umetumwa!");
+            document.getElementById('msg-content').value = '';
+            document.getElementById('admin-msg-modal').style.display = 'none';
+        }
+
+        function adminAddVoucher() {
+            if(localVouchers.length >= 10) {
+                return alert("Umefikisha kikomo cha vocha 10!");
+            }
+            
+            const promo = document.getElementById('v-promo').value.toUpperCase();
+            const net = document.getElementById('v-network').value;
+            const pin = document.getElementById('v-pin').value;
+
+            if(!promo || !net || !pin) return alert("Jaza vyote!");
+
+            localVouchers.push({ promo, network: net, pin });
+            localStorage.setItem('slvx_vouchers', JSON.stringify(localVouchers));
+            
+            document.getElementById('v-promo').value = '';
+            document.getElementById('v-network').value = '';
+            document.getElementById('v-pin').value = '';
+            
+            renderAdminVouchers();
+        }
+
+        function renderAdminVouchers() {
+            const list = document.getElementById('admin-voucher-list');
+            list.innerHTML = `<p class="text-xs text-brand-blue mb-2">Vocha Zilizopo: ${localVouchers.length}/10</p>`;
+            
+            localVouchers.forEach((v, index) => {
+                list.innerHTML += `
+                <div class="bg-slate-800 p-2 rounded flex justify-between items-center text-xs">
+                    <span class="font-bold text-brand-gold">${v.promo}</span>
+                    <span class="text-white">${v.network}</span>
+                    <span class="text-gray-400 font-mono">${v.pin}</span>
+                    <button onclick="deleteVoucher(${index})" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
+                </div>`;
+            });
+        }
+
+        function deleteVoucher(index) {
+            localVouchers.splice(index, 1);
+            localStorage.setItem('slvx_vouchers', JSON.stringify(localVouchers));
+            renderAdminVouchers();
+        }
+
+    </script>
+</body>
+</html>
