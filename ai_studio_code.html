@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SELVIX SAT - Selvix Awareness Training. Jifunze Cybersecurity, Social Media Protection, na Website Security Tanzania na Kimataifa.">
+    <meta name="keywords" content="Cybersecurity Tanzania, Hacking Training, Website Security, Selvix SAT, IT Training">
+    <meta name="author" content="Selvix Tech">
+    
+    <title>SELVIX SAT | Cybersecurity Awareness Training</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="https://i.ibb.co/LdrcYVwT/upload-1777227890620-385d2102-jpg.jpg" type="image/jpeg">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #020617;
+            --primary-cyan: #00f2ff;
+            --secondary-text: #e2e8f0;
+            --accent-purple: #8b5cf6;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(0, 242, 255, 0.2);
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'Poppins', sans-serif;
+            --transition: all 0.3s ease;
+        }
+
+        /* Anti-select */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* Disable text selection */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--secondary-text);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-cyan);
+            border-radius: 4px;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-family: var(--font-head);
+            color: #ffffff;
+        }
+
+        .highlight {
+            color: var(--primary-cyan);
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            font-family: var(--font-head);
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: transparent;
+            color: var(--primary-cyan);
+            border: 2px solid var(--primary-cyan);
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.2) inset, 0 0 10px rgba(0, 242, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-cyan);
+            color: var(--bg-color);
+            box-shadow: 0 0 20px var(--primary-cyan), 0 0 40px var(--primary-cyan);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            color: #fff;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Section Settings */
+        section {
+            padding: 100px 5%;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 30px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.1);
+            border-color: var(--primary-cyan);
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: var(--transition);
+        }
+
+        .nav-scrolled {
+            padding: 15px 5%;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .brand img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-cyan);
+            box-shadow: 0 0 10px var(--primary-cyan);
+        }
+
+        .brand-text h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .brand-text p {
+            font-size: 0.7rem;
+            color: var(--primary-cyan);
+            margin: 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-family: var(--font-head);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-cyan);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-cyan);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+            box-shadow: 0 0 10px var(--primary-cyan);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary-cyan);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 80px;
+            background: radial-gradient(circle at center, #0a192f 0%, #020617 100%);
+        }
+
+        .hero-content {
+            max-width: 600px;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #94a3b8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .hero-visual {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .shield-container {
+            position: relative;
+            width: 300px;
+            height: 350px;
+            background: rgba(0, 242, 255, 0.05);
+            border: 2px solid var(--primary-cyan);
+            clip-path: polygon(50% 0%, 100% 20%, 100% 70%, 50% 100%, 0% 70%, 0% 20%);
+            box-shadow: 0 0 50px rgba(0, 242, 255, 0.2);
+            animation: float 4s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .shield-container i {
+            font-size: 5rem;
+            color: var(--primary-cyan);
+            text-shadow: 0 0 20px var(--primary-cyan);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card h3 {
+            font-size: 1.3rem;
+            margin: 15px 0;
+            color: var(--primary-cyan);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-card ul {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .service-card ul li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+
+        .service-card ul li i {
+            color: var(--accent-purple);
+            font-size: 0.8rem;
+        }
+
+        /* Training Dashboard Preview */
+        .dashboard-preview {
+            background: linear-gradient(145deg, #0f172a, #020617);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .dash-sidebar {
+            border-right: 1px solid rgba(255,255,255,0.1);
+            padding-right: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-color);
+            font-weight: bold;
+        }
+
+        .dash-menu li {
+            list-style: none;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.02);
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dash-menu li.active {
+            background: rgba(0, 242, 255, 0.1);
+            color: var(--primary-cyan);
+            border-left: 3px solid var(--primary-cyan);
+        }
+
+        .dash-main {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .progress-section {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: #1e293b;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 65%;
+            background: var(--primary-cyan);
+            box-shadow: 0 0 10px var(--primary-cyan);
+            animation: loadProgress 2s ease-out forwards;
+        }
+
+        @keyframes loadProgress {
+            from { width: 0; }
+            to { width: 65%; }
+        }
+
+        .dash-cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .dash-item {
+            background: rgba(255,255,255,0.02);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .badge-ready {
+            background: rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            border: 1px solid var(--accent-purple);
+        }
+
+        /* Why Choose Us */
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .why-card {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .why-card i {
+            font-size: 2.5rem;
+            color: var(--primary-cyan);
+            margin-bottom: 20px;
+        }
+
+        /* Testimonials */
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .test-card p {
+            font-style: italic;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+
+        .test-client {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .test-client .stars {
+            color: #fbbf24;
+            font-size: 0.8rem;
+        }
+
+        /* Contact Section */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .info-item i {
+            font-size: 1.5rem;
+            color: var(--primary-cyan);
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 242, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-family: var(--font-body);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .contact-form input:focus, .contact-form textarea:focus {
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            background: #01040f;
+            padding: 50px 5% 20px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--primary-cyan);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        /* Scroll Animation Class */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Popup Message (Anti-Inspect) */
+        #security-popup {
+            position: fixed;
+            top: 20px;
+            right: -300px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid red;
+            color: #ff4d4d;
+            padding: 15px 20px;
+            border-radius: 5px;
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            transition: 0.5s;
+            font-family: var(--font-head);
+            box-shadow: 0 0 20px rgba(255,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 991px) {
+            .hero {
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+                padding-top: 120px;
+            }
+            .hero-buttons {
+                justify-content: center;
+            }
+            .hero-visual {
+                width: 300px;
+                height: 300px;
+                margin-top: 50px;
+            }
+            .shield-container {
+                width: 200px;
+                height: 230px;
+            }
+            .shield-container i { font-size: 3rem; }
+            .dashboard-preview { grid-template-columns: 1fr; }
+            .dash-sidebar { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+            .contact-container { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 70%;
+                background: #020617;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: 0.5s;
+                border-left: 1px solid var(--primary-cyan);
+                z-index: 999;
+            }
+            .nav-links.active { right: 0; }
+            .mobile-menu-btn { display: block; z-index: 1000; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .dash-cards-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Anti Inspect Warning Popup -->
+    <div id="security-popup">
+        <i class="fas fa-shield-alt"></i> Access Denied. Action Blocked!
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar">
+        <a href="#" class="brand">
+            <img src="https://i.ibb.co/LdrcYVwT/upload-1777227890620-385d2102-jpg.jpg" alt="SELVIX SAT Logo">
+            <div class="brand-text">
+                <h1>SELVIX SAT</h1>
+                <p>Selvix Awareness Training</p>
+            </div>
+        </a>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#training">Training</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="mobile-menu-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content reveal">
+            <h1>THINK LIKE A <span class="highlight">HACKER</span>.<br>DEFEND LIKE A <span class="highlight">PRO</span>.</h1>
+            <p>Tunafundisha wafanyakazi, biashara, wanafunzi, na IT Enthusiasts jinsi ya kuelewa mbinu za wadukuzi ili kujilinda dhidi ya mashambulizi ya mtandao katika ulimwengu wa kidijitali.</p>
+            <div class="hero-buttons">
+                <a href="#training" class="btn btn-primary">Start Training</a>
+                <a href="#contact" class="btn btn-secondary">Contact Us</a>
+            </div>
+        </div>
+        <div class="hero-visual reveal">
+            <div class="shield-container">
+                <i class="fas fa-user-secret"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services">
+        <h2 class="section-title reveal"><span class="highlight">Premium</span> Services</h2>
+        <div class="services-grid">
+            <!-- Card 1 -->
+            <div class="glass-card service-card reveal">
+                <h3><i class="fab fa-whatsapp"></i> Social Media Protection</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> WhatsApp Security Setup</li>
+                    <li><i class="fas fa-check-circle"></i> Instagram & FB Protection</li>
+                    <li><i class="fas fa-check-circle"></i> SIM Swap Awareness</li>
+                    <li><i class="fas fa-check-circle"></i> Phishing Prevention</li>
+                </ul>
+            </div>
+            <!-- Card 2 -->
+            <div class="glass-card service-card reveal">
+                <h3><i class="fas fa-globe"></i> Website Security</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> Website Hardening</li>
+                    <li><i class="fas fa-check-circle"></i> Admin Panel Protection</li>
+                    <li><i class="fas fa-check-circle"></i> SSL Setup & Config</li>
+                    <li><i class="fas fa-check-circle"></i> Malware Scan & Backup</li>
+                </ul>
+            </div>
+            <!-- Card 3 -->
+            <div class="glass-card service-card reveal">
+                <h3><i class="fas fa-building"></i> Corporate Training</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> Staff Awareness Ops</li>
+                    <li><i class="fas fa-check-circle"></i> Email Security Guard</li>
+                    <li><i class="fas fa-check-circle"></i> Password Policy Dev</li>
+                    <li><i class="fas fa-check-circle"></i> Security Culture Setup</li>
+                </ul>
+            </div>
+            <!-- Card 4 -->
+            <div class="glass-card service-card reveal">
+                <h3><i class="fas fa-laptop-code"></i> IT Enthusiast Zone</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> Linux Security Admin</li>
+                    <li><i class="fas fa-check-circle"></i> Ethical Hacking Basics</li>
+                    <li><i class="fas fa-check-circle"></i> Pentesting Intro</li>
+                    <li><i class="fas fa-check-circle"></i> Network & Secure Coding</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Training Dashboard Preview -->
+    <section id="training">
+        <h2 class="section-title reveal">Training <span class="highlight">Dashboard</span> Preview</h2>
+        <div class="dashboard-preview reveal">
+            <!-- Sidebar -->
+            <div class="dash-sidebar">
+                <div class="user-profile">
+                    <div class="user-avatar">ST</div>
+                    <div>
+                        <h4 style="font-size: 1rem;">Student Access</h4>
+                        <p style="font-size: 0.8rem; color: var(--primary-cyan);">Pro Member</p>
+                    </div>
+                </div>
+                <ul class="dash-menu">
+                    <li class="active"><i class="fas fa-th-large"></i> Dashboard</li>
+                    <li><i class="fas fa-video"></i> My Courses</li>
+                    <li><i class="fas fa-lock"></i> Premium Labs <i class="fas fa-crown" style="margin-left:auto; color:gold; font-size:0.7rem;"></i></li>
+                    <li><i class="fas fa-certificate"></i> Certificates</li>
+                </ul>
+            </div>
+            <!-- Main Content -->
+            <div class="dash-main">
+                <div class="progress-section">
+                    <h4>Ethical Hacking Fundamentals</h4>
+                    <p style="font-size: 0.8rem; margin-top: 5px;">Module 4: Network Scanning & Recon</p>
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p style="text-align: right; font-size: 0.8rem; margin-top: 5px; color: var(--primary-cyan);">65% Completed</p>
+                </div>
+                <div class="dash-cards-grid">
+                    <div class="dash-item">
+                        <div>
+                            <h4 style="color:#fff;">Modules Done</h4>
+                            <h2 style="color: var(--primary-cyan);">12/18</h2>
+                        </div>
+                        <i class="fas fa-tasks" style="font-size: 2rem; color: #334155;"></i>
+                    </div>
+                    <div class="dash-item">
+                        <div>
+                            <h4 style="color:#fff;">Certification</h4>
+                            <p class="badge-ready" style="margin-top:5px;">Exam Ready</p>
+                        </div>
+                        <i class="fas fa-award" style="font-size: 2rem; color: var(--accent-purple);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section id="about">
+        <h2 class="section-title reveal">Why <span class="highlight">Choose Us</span></h2>
+        <div class="why-grid">
+            <div class="glass-card why-card reveal">
+                <i class="fas fa-biohazard"></i>
+                <h3>Real World Threats</h3>
+                <p>Tunakufundisha kwa kutumia mbinu halisi zinazotumiwa na wadukuzi duniani kote kwa sasa.</p>
+            </div>
+            <div class="glass-card why-card reveal">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>Tanzania Focused</h3>
+                <p>Mafunzo yamelenga moja kwa moja matatizo ya kiusalama yanayoikabili jamii ya Kitanzania.</p>
+            </div>
+            <div class="glass-card why-card reveal">
+                <i class="fas fa-user-graduate"></i>
+                <h3>Beginner Friendly</h3>
+                <p>Hata kama hauna uzoefu na IT, lugha rahisi tunayotumia itakufanya uelewe kiurahisi.</p>
+            </div>
+            <div class="glass-card why-card reveal">
+                <i class="fas fa-briefcase"></i>
+                <h3>Pro Level Skills</h3>
+                <p>Kwa wataalamu, tunatoa advanced training inayokidhi viwango vya kimataifa.</p>
+            </div>
+            <div class="glass-card why-card reveal">
+                <i class="fas fa-tags"></i>
+                <h3>Affordable</h3>
+                <p>Gharama nafuu ukilinganisha na thamani kubwa ya usalama unaopata wewe na biashara yako.</p>
+            </div>
+            <div class="glass-card why-card reveal">
+                <i class="fas fa-sync"></i>
+                <h3>Continuous Updates</h3>
+                <p>Mbinu za udukuzi zinabadilika kila siku, na sisi tunaupdate mafunzo yetu kila wakati.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" style="background: rgba(255,255,255,0.01);">
+        <h2 class="section-title reveal">Client <span class="highlight">Reviews</span></h2>
+        <div class="test-grid">
+            <div class="glass-card test-card reveal">
+                <p>"Baada ya ofisi yetu kufanyiwa mafunzo na Selvix SAT, wafanyakazi wetu sasa wanaelewa jinsi ya kutambua phishing emails. We are more secure now!"</p>
+                <div class="test-client">
+                    <div class="user-avatar" style="width:40px; height:40px;">IT</div>
+                    <div>
+                        <h4 style="font-size: 1rem;">IT Manager</h4>
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card test-card reveal">
+                <p>"Akaunti yangu ya Instagram ilikuwa kwenye hatari lakini baada ya ushauri na huduma yao ya Social Media Protection, nipo salama."</p>
+                <div class="test-client">
+                    <div class="user-avatar" style="width:40px; height:40px; background:var(--accent-purple);">B</div>
+                    <div>
+                        <h4 style="font-size: 1rem;">Business Owner</h4>
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card test-card reveal">
+                <p>"Course ya Ethical Hacking niliyochukua hapa ni the best. Nimejifunza mambo ambayo sikuwahi kuyajua kwenye Linux security."</p>
+                <div class="test-client">
+                    <div class="user-avatar" style="width:40px; height:40px; background:#e11d48;">S</div>
+                    <div>
+                        <h4 style="font-size: 1rem;">CS Student</h4>
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2 class="section-title reveal">Secure <span class="highlight">Comms</span></h2>
+        <div class="contact-container reveal">
+            <div class="contact-info">
+                <h3>Contact Information</h3>
+                <p>Wasiliana nasi leo kwa usalama wako wa kidijitali. Timu yetu ipo tayari kukuhudumia.</p>
+                
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <h4 style="color:#fff;">Email</h4>
+                        <p>info@selvixtech</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <div>
+                        <h4 style="color:#fff;">Phone / WhatsApp</h4>
+                        <p>0750020767</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <h4 style="color:#fff;">Location</h4>
+                        <p>Tanzania, East Africa</p>
+                    </div>
+                </div>
+            </div>
+
+            <form class="contact-form glass-card">
+                <h3>Send Inquiry</h3>
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email Address" required>
+                <input type="text" placeholder="Phone Number" required>
+                <textarea rows="4" placeholder="Your Message..." required></textarea>
+                <button type="button" class="btn btn-primary" style="width:100%;" onclick="alert('Message Sent Securely!')">Send Inquiry <i class="fas fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="brand">
+                <img src="https://i.ibb.co/LdrcYVwT/upload-1777227890620-385d2102-jpg.jpg" alt="SELVIX SAT Logo" style="width:40px; height:40px;">
+                <div class="brand-text">
+                    <h1 style="font-size: 1.2rem;">SELVIX SAT</h1>
+                    <p style="font-size: 0.6rem;">Selvix Awareness Training</p>
+                </div>
+            </div>
+            
+            <div class="social-links" style="margin-top: 20px;">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 SELVIX SAT. All Rights Reserved. Secured by Selvix Tech.
+        </div>
+    </footer>
+
+    <!-- JavaScript For Interactions and Security -->
+    <script>
+        // --- 1. UI Interactions & Animations ---
+
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const nav = document.getElementById('nav-links');
+            nav.classList.toggle('active');
+        }
+
+        // Sticky Navbar effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('nav-scrolled');
+            } else {
+                nav.classList.remove('nav-scrolled');
+            }
+        });
+
+        // Scroll Reveal Animation (Intersection Observer)
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Trigger on load
+
+        // --- 2. Advanced Cybersecurity JS Features (Anti-Theft Code) ---
+
+        const securityPopup = document.getElementById('security-popup');
+
+        function showWarning() {
+            securityPopup.style.right = '20px';
+            setTimeout(() => {
+                securityPopup.style.right = '-300px';
+            }, 3000);
+        }
+
+        // Disable Right Click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            showWarning();
+        });
+
+        // Disable Keyboard Shortcuts (F12, Ctrl+Shift+I, Ctrl+U)
+        document.onkeydown = function(e) {
+            // F12
+            if (e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault();
+                showWarning();
+                return false;
+            }
+            // Ctrl + Shift + I (Inspect Element)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.keyCode === 73)) {
+                e.preventDefault();
+                showWarning();
+                return false;
+            }
+            // Ctrl + Shift + J (Console)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.key === 'j' || e.keyCode === 74)) {
+                e.preventDefault();
+                showWarning();
+                return false;
+            }
+            // Ctrl + U (View Source)
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.keyCode === 85)) {
+                e.preventDefault();
+                showWarning();
+                return false;
+            }
+            // Ctrl + S (Save Page)
+            if (e.ctrlKey && (e.key === 'S' || e.key === 's' || e.keyCode === 83)) {
+                e.preventDefault();
+                showWarning();
+                return false;
+            }
+            // Ctrl + C / Ctrl + X (Copy Cut Disable)
+            if (e.ctrlKey && (e.key === 'C' || e.key === 'c' || e.key === 'X' || e.key === 'x')) {
+                e.preventDefault();
+                showWarning();
+                return false;
+            }
+        };
+
+        // Detect DevTools open by window size difference
+        setInterval(function() {
+            const widthThreshold = window.outerWidth - window.innerWidth > 160;
+            const heightThreshold = window.outerHeight - window.innerHeight > 160;
+            
+            if (widthThreshold || heightThreshold) {
+                document.body.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20%; font-family:Orbitron;'>Developer Tools Detected. Access Blocked by Selvix Security.</h1>";
+            }
+        }, 1000);
+
+        // Anti Console clear trick (Crash console open)
+        const checkConsole = new Function("debugger");
+        setInterval(() => {
+            checkConsole();
+        }, 100);
+
+    </script>
+</body>
+</html>
